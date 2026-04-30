@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 
 export function Header() {
@@ -7,136 +7,145 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
+    const handleScroll = () => setIsScrolled(window.scrollY > 60);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
   };
 
   const navItems = [
-    { id: 'about', label: 'About' },
+    { id: 'about',    label: 'About' },
     { id: 'projects', label: 'Projects' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'contact',  label: 'Contact' },
   ];
 
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-gray-900/95 backdrop-blur-lg border-b border-gray-700/50 shadow-lg shadow-gray-900/20' 
-          : 'bg-transparent'
-      }`}
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: isScrolled
+          ? 'rgba(10, 10, 15, 0.88)'
+          : 'transparent',
+        backdropFilter: isScrolled ? 'blur(24px)' : 'none',
+        borderBottom: isScrolled ? '1px solid rgba(212,175,55,0.1)' : 'none',
+      }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+      <div className="max-w-6xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 md:h-20">
+
           {/* Logo */}
           <motion.button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            whileHover={{ scale: 1.05 }}
-            className="text-white text-2xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent hover:from-blue-300 hover:to-purple-300 transition-all duration-300"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="text-gold font-display text-xl tracking-wide"
+            style={{ background: 'none', border: 'none', cursor: 'pointer' }}
           >
-            Rizky Ilman
+            Rizky<span style={{ color: 'var(--text-muted)', fontWeight: 300 }}> Ilman</span>
           </motion.button>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navItems.map((item, index) => (
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-10">
+            {navItems.map((item, i) => (
               <motion.button
                 key={item.id}
-                initial={{ opacity: 0, y: -20 }}
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
                 onClick={() => scrollToSection(item.id)}
-                className="relative text-gray-300 hover:text-white transition-colors duration-300 group"
+                className="nav-link"
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></span>
               </motion.button>
             ))}
           </nav>
 
-          {/* Desktop CTA Button */}
+          {/* CTA */}
           <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => scrollToSection('contact')}
-            className="hidden md:block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+            className="hidden md:inline-flex btn-ghost text-sm"
           >
             Let's Talk
           </motion.button>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Toggle */}
           <motion.button
-            whileTap={{ scale: 0.95 }}
-            className="md:hidden text-white p-2 rounded-lg hover:bg-gray-800/50 transition-colors"
+            whileTap={{ scale: 0.93 }}
+            className="md:hidden p-2 rounded-lg"
+            style={{ color: 'var(--text-primary)', background: 'none', border: 'none', cursor: 'pointer' }}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <motion.div
-              animate={{ rotate: isMenuOpen ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              {isMenuOpen
+                ? <motion.span key="x" initial={{ rotate: -90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }} transition={{ duration: 0.2 }}>
+                    <X size={22} />
+                  </motion.span>
+                : <motion.span key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: -90 }} transition={{ duration: 0.2 }}>
+                    <Menu size={22} />
+                  </motion.span>
+              }
+            </AnimatePresence>
           </motion.button>
         </div>
-
-        {/* Mobile Navigation */}
-        <motion.nav
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ 
-            opacity: isMenuOpen ? 1 : 0,
-            height: isMenuOpen ? 'auto' : 0
-          }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden overflow-hidden"
-        >
-          <div className="pb-4 space-y-2 bg-gray-800/50 backdrop-blur-sm rounded-lg mt-2 p-4">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ 
-                  opacity: isMenuOpen ? 1 : 0,
-                  x: isMenuOpen ? 0 : -20
-                }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left text-gray-300 hover:text-white hover:bg-gray-700/50 px-4 py-3 rounded-lg transition-all duration-300"
-              >
-                {item.label}
-              </motion.button>
-            ))}
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ 
-                opacity: isMenuOpen ? 1 : 0,
-                x: isMenuOpen ? 0 : -20
-              }}
-              transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
-              onClick={() => scrollToSection('contact')}
-              className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg transition-all duration-300 hover:from-blue-700 hover:to-purple-700"
-            >
-              Let's Talk
-            </motion.button>
-          </div>
-        </motion.nav>
       </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden overflow-hidden"
+            style={{
+              background: 'rgba(10, 10, 15, 0.95)',
+              backdropFilter: 'blur(24px)',
+              borderBottom: '1px solid rgba(212,175,55,0.1)',
+            }}
+          >
+            <div className="max-w-6xl mx-auto px-6 py-6 space-y-1">
+              {navItems.map((item, i) => (
+                <motion.button
+                  key={item.id}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: i * 0.06 }}
+                  onClick={() => scrollToSection(item.id)}
+                  className="block w-full text-left px-4 py-3 rounded-lg text-sm transition-all duration-300"
+                  style={{
+                    color: 'var(--text-secondary)',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                  onMouseEnter={e => { e.target.style.color = 'var(--gold-400)'; e.target.style.background = 'rgba(212,175,55,0.05)'; }}
+                  onMouseLeave={e => { e.target.style.color = 'var(--text-secondary)'; e.target.style.background = 'none'; }}
+                >
+                  {item.label}
+                </motion.button>
+              ))}
+              <div className="pt-4">
+                <button onClick={() => scrollToSection('contact')} className="btn-gold w-full justify-center text-sm">
+                  Let's Talk
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
