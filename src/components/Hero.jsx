@@ -95,38 +95,20 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.65 }}
-          className="max-w-2xl mx-auto mb-4 leading-relaxed"
+          className="max-w-2xl mx-auto mb-12 leading-relaxed"
           style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem' }}
         >
-          Fresh Graduate Sistem Informasi UPN "Veteran" Jawa Timur dengan IPK 3.70/4.00.
-          Bersemangat dalam pengembangan web, data science, dan machine learning.
+          Passionate developer dengan latar belakang Sistem Informasi yang antusias membangun
+          aplikasi web modern, mobile, dan solusi berbasis data.
         </motion.p>
 
-        {/* GPA badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="inline-flex items-center gap-2 mb-10 px-4 py-1.5 rounded-full"
-          style={{
-            background: 'rgba(212,175,55,0.1)',
-            border: '1px solid rgba(212,175,55,0.25)',
-          }}
-        >
-          <span style={{ color: 'var(--gold-400)', fontSize: '0.75rem', fontFamily: 'DM Mono, monospace' }}>
-            GPA 3.70 / 4.00
-          </span>
-          <span style={{ color: 'var(--gold-500)', fontSize: '0.5rem' }}>◆</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'DM Mono, monospace' }}>
-            UPN Veteran Jawa Timur
-          </span>
-        </motion.div>
+
 
         {/* Social links */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.9 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
           className="flex justify-center gap-4 mb-12"
         >
           {socialLinks.map(({ icon: Icon, href, label }) => (
